@@ -5,6 +5,8 @@ import json
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
+import pandas as pd
+
 with open("setting.json", encoding="UTF-8") as f:
     SETTING = json.loads(f.read())
 DataLoadingType = SETTING['MODULE']['DataLoadingType']
@@ -18,6 +20,13 @@ StatisticsTNM = SETTING['DB']['StatisticsTNM']
 BS = SETTING['FILE']
 DBSelectTime = SETTING['DB']['DBSelectTime']
 day = datetime.today().strftime("%Y-%m-%d")
+
+runningservice_locate = SETTING['FILE']['RunningService_Except']['Location']
+readXls = pd.read_excel(runningservice_locate)
+running_remove = []
+for i in readXls.index :
+    running_remove.append(readXls['Running Service'][i])
+    #print(i, readXls['Running Service'][i])
 
 
 def plug_in(table, day, type):

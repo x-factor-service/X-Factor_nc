@@ -2348,6 +2348,18 @@ progress {
     padding: 0.25rem
 }
 
+.table-sm-se>:not(caption)>*>* {
+    padding: 0.26rem;
+    border-bottom: 1px solid;
+    border-color : rgba(255, 255, 255, 0.3);
+}
+
+.table-sm-se>thead {
+    padding: 0.25rem;
+    border-bottom: 4.5px double;
+    border-color : rgba(255, 255, 255, 0.3);
+}
+
 .table-bordered>:not(caption)>* {
     border-width: 1px 0
 }
@@ -11201,6 +11213,10 @@ fieldset:disabled .btn {
 
 .mt-n5 {
     margin-top: -3rem !important
+}
+
+.mt-nd {
+    margin-top: -2rem !important
 }
 
 .me-n1 {

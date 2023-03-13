@@ -72,6 +72,9 @@
       "Storage" : "data/statistics/daily/",
       "FileName" : "Statistics_",
       "FileType" : ".json"
+    },
+    "RunningService_Except" : {
+      "Location" : "/running services.xlsx"
     }
   }
 }

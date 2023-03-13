@@ -1227,7 +1227,7 @@ var handleRenderChartNC = function () {
     //--------------------------------------------------------------------------
     // Total quantity of servers - apexTotalServerChart Virtual
     //--------------------------------------------------------------------------
-    console.log(a.server_LChartDataList[0].data[1]);
+    //console.log(a.server_LChartDataList[0].data[1]);
     var virtual_Value = a.server_LChartDataList[0].data[0]
 
     var apexTotalServerOptions = {
@@ -1297,7 +1297,7 @@ var handleRenderChartNC = function () {
           position: 'top',
           offsetY: 1,
           horizontalAlign: 'right',
-          floating: true
+          floating: true,
         }
     };
     var apexTotalServerChart = new ApexCharts(
