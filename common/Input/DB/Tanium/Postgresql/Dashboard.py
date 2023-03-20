@@ -21,12 +21,13 @@ BS = SETTING['FILE']
 DBSelectTime = SETTING['DB']['DBSelectTime']
 day = datetime.today().strftime("%Y-%m-%d")
 
-runningservice_locate = SETTING['FILE']['RunningService_Except']['Location']
-readXls = pd.read_excel(runningservice_locate)
-running_remove = []
-for i in readXls.index :
-    running_remove.append(readXls['Running Service'][i])
+# runningservice_locate = SETTING['FILE']['RunningService_Except']['Location']
+# readXls = pd.read_excel(runningservice_locate)
+# running_remove = []
+# for i in readXls.index :
+#     running_remove.append(readXls['Running Service'][i])
     #print(i, readXls['Running Service'][i])
+    #print(type(running_remove))
 
 
 def plug_in(table, day, type):

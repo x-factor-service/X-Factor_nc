@@ -31,7 +31,7 @@
     }
   },
    "API" : {
-     "apiUrl": "https://1.223.168.93:49105",
+     "apiUrl": "https://192.168.5.100",
      "ContentType": "application/json",
      "PATH": {
        "SesstionKey": "/api/v2/session/login",
