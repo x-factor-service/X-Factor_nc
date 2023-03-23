@@ -264,8 +264,39 @@ var OshandleRenderDashboardPopupTableData = function () {
 			"infoFiltered": "(전체 _MAX_ 건 중 검색결과)",
 			"infoPostFix": "",
 		},
+		drawCallback: function() {
+            var current_page = dashboardpopupTable.page();
+            var total_pages = dashboardpopupTable.page.info().pages;
+            $('#nexts').remove();
+            $('#after').remove();
 
+            if (total_pages > 10){
+            $('<button type="button" class="btn" id="nexts">10≫</button>')
+            .insertAfter('#OsDashboard-popupTable_paginate .paginate_button:last');
+            $('<button type="button" class="btn" id="after">≪10</button>')
+            .insertBefore('#OsDashboard-popupTable_paginate .paginate_button:first');
+            }
+        }
 	});
+
+	$(document).on('click', '#nexts, #after', function() {
+        var current_page = dashboardpopupTable.page();
+        var total_pages = dashboardpopupTable.page.info().pages;
+        if ($(this).attr('id') == 'nexts') {
+                if (current_page + 10 < total_pages) {
+                    dashboardpopupTable.page(current_page + 10).draw('page');
+                } else {
+                    dashboardpopupTable.page(total_pages - 1).draw('page');
+                }
+                } else {
+                    dashboardpopupTable.page(Math.max(current_page - 10, 0)).draw('page');
+                }
+    });
+
+    $(document).ready(function() {
+        var customStyle = '<style>#nexts, #after {color: #FFFFFF; background-color: #FFFFFF26; margin-left: 5px; height: 33px; padding: 6px 12px; font-size: 15px; padding: 6px 12px; margin-right: 5px;}</style>';
+        $('head').append(customStyle);
+});
 };
 var serverhandleRenderDashboardPopupTableData = function () {
 	var dashboardpopupTable = $('#serverBandBydashboard-popupTable').DataTable({
@@ -315,7 +346,39 @@ var serverhandleRenderDashboardPopupTableData = function () {
 			"infoPostFix": "",
 		},
 
+        drawCallback: function() {
+            var current_page = dashboardpopupTable.page();
+            var total_pages = dashboardpopupTable.page.info().pages;
+            $('#nexts').remove();
+            $('#after').remove();
+
+            if (total_pages > 10){
+            $('<button type="button" class="btn" id="nexts">10≫</button>')
+            .insertAfter('#serverBandBydashboard-popupTable_paginate .paginate_button:last');
+            $('<button type="button" class="btn" id="after">≪10</button>')
+            .insertBefore('#serverBandBydashboard-popupTable_paginate .paginate_button:first');
+            }
+        }
 	});
+
+	$(document).on('click', '#nexts, #after', function() {
+        var current_page = dashboardpopupTable.page();
+        var total_pages = dashboardpopupTable.page.info().pages;
+        if ($(this).attr('id') == 'nexts') {
+                if (current_page + 10 < total_pages) {
+                    dashboardpopupTable.page(current_page + 10).draw('page');
+                } else {
+                    dashboardpopupTable.page(total_pages - 1).draw('page');
+                }
+                } else {
+                    dashboardpopupTable.page(Math.max(current_page - 10, 0)).draw('page');
+                }
+    });
+
+    $(document).ready(function() {
+        var customStyle = '<style>#nexts, #after {color: #FFFFFF; background-color: #FFFFFF26; margin-left: 5px; height: 33px; padding: 6px 12px; font-size: 15px; padding: 6px 12px; margin-right: 5px;}</style>';
+        $('head').append(customStyle);
+});
 };
 var runningServicehandleRenderDashboardPopupTableData = function () {
 	var dashboardpopupTable = $('#runningServiceDashboard-popupTable').DataTable({
@@ -326,6 +389,7 @@ var runningServicehandleRenderDashboardPopupTableData = function () {
 		ordering: false,
 		serverSide: true,
 		displayLength: false,
+		autoWidth: true,
 		ajax: {
 			url: 'paging/',
 			type: "POST",
@@ -364,8 +428,41 @@ var runningServicehandleRenderDashboardPopupTableData = function () {
 			"infoFiltered": "(전체 _MAX_ 건 중 검색결과)",
 			"infoPostFix": "",
 		},
+        pagingType: 'numbers',//이전 다음 버튼 히든처리
 
-	});
+        //페이징 10칸식 이동 로직
+        drawCallback: function() {
+            var current_page = dashboardpopupTable.page();
+            var total_pages = dashboardpopupTable.page.info().pages;
+            $('#nexts').remove();
+            $('#after').remove();
+
+            if (total_pages > 10){ // 페이지 수가 10개 이상일때  10칸이동버튼 활성화
+            $('<button type="button" class="btn" id="nexts">10≫</button>')
+            .insertAfter('#runningServiceDashboard-popupTable_paginate .paginate_button:last');
+            $('<button type="button" class="btn" id="after">≪10</button>')
+            .insertBefore('#runningServiceDashboard-popupTable_paginate .paginate_button:first');
+            }
+        }
+});
+
+	$(document).on('click', '#nexts, #after', function() {
+        var current_page = dashboardpopupTable.page();
+        var total_pages = dashboardpopupTable.page.info().pages;
+        if ($(this).attr('id') == 'nexts') {
+                if (current_page + 10 < total_pages) {
+                    dashboardpopupTable.page(current_page + 10).draw('page');
+                } else {
+                    dashboardpopupTable.page(total_pages - 1).draw('page');
+                }
+                } else {
+                    dashboardpopupTable.page(Math.max(current_page - 10, 0)).draw('page');
+                }
+});
+        $(document).ready(function() {
+        var customStyle = '<style>#nexts, #after {color: #FFFFFF; background-color: #FFFFFF26; margin-left: 5px; height: 33px; padding: 6px 12px; font-size: 15px; padding: 6px 12px; margin-right: 5px;}</style>';
+        $('head').append(customStyle);
+});
 };
 var physicalServerhandleRenderDashboardPopupTableData = function () {
 	var dashboardpopupTable = $('#physicalServerDashboard-popupTable').DataTable({
@@ -416,7 +513,39 @@ var physicalServerhandleRenderDashboardPopupTableData = function () {
 			"infoPostFix": "",
 		},
 
-	});
+	drawCallback: function() {
+            var current_page = dashboardpopupTable.page();
+            var total_pages = dashboardpopupTable.page.info().pages;
+            $('#nexts').remove();
+            $('#after').remove();
+
+            if (total_pages > 10){
+            $('<button type="button" class="btn" id="nexts">10≫</button>')
+            .insertAfter('#physicalServerDashboard-popupTable_paginate .paginate_button:last');
+            $('<button type="button" class="btn" id="after">≪10</button>')
+            .insertBefore('#physicalServerDashboard-popupTable_paginate .paginate_button:first');
+             }
+        }
+
+});
+
+	$(document).on('click', '#nexts, #after', function() {
+        var current_page = dashboardpopupTable.page();
+        var total_pages = dashboardpopupTable.page.info().pages;
+        if ($(this).attr('id') == 'nexts') {
+                if (current_page + 10 < total_pages) {
+                    dashboardpopupTable.page(current_page + 10).draw('page');
+                } else {
+                    dashboardpopupTable.page(total_pages - 1).draw('page');
+                }
+                } else {
+                    dashboardpopupTable.page(Math.max(current_page - 10, 0)).draw('page');
+                }
+});
+        $(document).ready(function() {
+        var customStyle = '<style>#nexts, #after {color: #FFFFFF; background-color: #FFFFFF26; margin-left: 5px; height: 33px; padding: 6px 12px; font-size: 15px; padding: 6px 12px; margin-right: 5px;}</style>';
+        $('head').append(customStyle);
+});
 };
 var gpuServerhandleRenderDashboardPopupTableData = function () {
 	var dashboardpopupTable = $('#gpuServerDashboard-popupTable').DataTable({
@@ -470,8 +599,40 @@ var gpuServerhandleRenderDashboardPopupTableData = function () {
 			"infoFiltered": "(전체 _MAX_ 건 중 검색결과)",
 			"infoPostFix": "",
 		},
+        pagingType: 'numbers',
 
-	});
+        drawCallback: function() {
+            var current_page = dashboardpopupTable.page();
+            var total_pages = dashboardpopupTable.page.info().pages;
+            $('#nexts').remove();
+            $('#after').remove();
+
+            if (total_pages > 10){
+            $('<button type="button" class="btn" id="nexts">10≫</button>')
+            .insertAfter('#gpuServerDashboard-popupTable_paginate .paginate_button:last');
+            $('<button type="button" class="btn" id="after">≪10</button>')
+            .insertBefore('#gpuServerDashboard-popupTable_paginate .paginate_button:first');
+            }
+        }
+});
+
+	$(document).on('click', '#nexts, #after', function() {
+        var current_page = dashboardpopupTable.page();
+        var total_pages = dashboardpopupTable.page.info().pages;
+        if ($(this).attr('id') == 'nexts') {
+                if (current_page + 10 < total_pages) {
+                    dashboardpopupTable.page(current_page + 10).draw('page');
+                } else {
+                    dashboardpopupTable.page(total_pages - 1).draw('page');
+                }
+                } else {
+                    dashboardpopupTable.page(Math.max(current_page - 10, 0)).draw('page');
+                }
+});
+        $(document).ready(function() {
+        var customStyle = '<style>#nexts, #after {color: #FFFFFF; background-color: #FFFFFF26; margin-left: 5px; height: 33px; padding: 6px 12px; font-size: 15px; padding: 6px 12px; margin-right: 5px;}</style>';
+        $('head').append(customStyle);
+});
 };
 var handleRenderDashboardPopupTableData = function () {
 	var dashboardpopupTable = $('#MemoryDashboard-popupTable').DataTable({
@@ -526,7 +687,41 @@ var handleRenderDashboardPopupTableData = function () {
 			"infoFiltered": "(전체 _MAX_ 건 중 검색결과)",
 			"infoPostFix": "",
 		},
-	});
+	    pagingType: 'numbers',
+
+
+        drawCallback: function() {
+            var current_page = dashboardpopupTable.page();
+            var total_pages = dashboardpopupTable.page.info().pages;
+            $('#nexts').remove();
+            $('#after').remove();
+
+            if (total_pages > 10){
+            $('<button type="button" class="btn" id="nexts">10≫</button>')
+            .insertAfter('#MemoryDashboard-popupTable_paginate .paginate_button:last');
+            $('<button type="button" class="btn" id="after">≪10</button>')
+            .insertBefore('#MemoryDashboard-popupTable_paginate .paginate_button:first');
+            }
+        }
+});
+
+	$(document).on('click', '#nexts, #after', function() {
+        var current_page = dashboardpopupTable.page();
+        var total_pages = dashboardpopupTable.page.info().pages;
+        if ($(this).attr('id') == 'nexts') {
+                if (current_page + 10 < total_pages) {
+                    dashboardpopupTable.page(current_page + 10).draw('page');
+                } else {
+                    dashboardpopupTable.page(total_pages - 1).draw('page');
+                }
+                } else {
+                    dashboardpopupTable.page(Math.max(current_page - 10, 0)).draw('page');
+                }
+});
+        $(document).ready(function() {
+        var customStyle = '<style>#nexts, #after {color: #FFFFFF; background-color: #FFFFFF26; margin-left: 5px; height: 33px; padding: 6px 12px; font-size: 15px; padding: 6px 12px; margin-right: 5px;}</style>';
+        $('head').append(customStyle);
+});
 };
 var CpuhandleRenderDashboardPopupTableData = function () {
 	var dashboardpopupTable = $('#CpuDashboard-popupTable').DataTable({
@@ -579,8 +774,40 @@ var CpuhandleRenderDashboardPopupTableData = function () {
 			"infoFiltered": "(전체 _MAX_ 건 중 검색결과)",
 			"infoPostFix": "",
 		},
+        pagingType: 'numbers',
 
-	});
+        drawCallback: function() {
+            var current_page = dashboardpopupTable.page();
+            var total_pages = dashboardpopupTable.page.info().pages;
+            $('#nexts').remove();
+            $('#after').remove();
+
+            if (total_pages > 10){
+            $('<button type="button" class="btn" id="nexts">10≫</button>')
+            .insertAfter('#CpuDashboard-popupTable_paginate .paginate_button:last');
+            $('<button type="button" class="btn" id="after">≪10</button>')
+            .insertBefore('#CpuDashboard-popupTable_paginate .paginate_button:first');
+            }
+        }
+});
+
+	$(document).on('click', '#nexts, #after', function() {
+        var current_page = dashboardpopupTable.page();
+        var total_pages = dashboardpopupTable.page.info().pages;
+        if ($(this).attr('id') == 'nexts') {
+                if (current_page + 10 < total_pages) {
+                    dashboardpopupTable.page(current_page + 10).draw('page');
+                } else {
+                    dashboardpopupTable.page(total_pages - 1).draw('page');
+                }
+                } else {
+                    dashboardpopupTable.page(Math.max(current_page - 10, 0)).draw('page');
+                }
+});
+        $(document).ready(function() {
+        var customStyle = '<style>#nexts, #after {color: #FFFFFF; background-color: #FFFFFF26; margin-left: 5px; height: 33px; padding: 6px 12px; font-size: 15px; padding: 6px 12px; margin-right: 5px;}</style>';
+        $('head').append(customStyle);
+});
 };
 var DiskhandleRenderDashboardPopupTableData = function () {
 	var dashboardpopupTable = $('#DiskDashboard-popupTable').DataTable({
@@ -635,8 +862,40 @@ var DiskhandleRenderDashboardPopupTableData = function () {
 			"infoFiltered": "(전체 _MAX_ 건 중 검색결과)",
 			"infoPostFix": "",
 		},
+		pagingType: 'numbers',
 
-	});
+        drawCallback: function() {
+            var current_page = dashboardpopupTable.page();
+            var total_pages = dashboardpopupTable.page.info().pages;
+            $('#nexts').remove();
+            $('#after').remove();
+
+            if (total_pages > 10){
+            $('<button type="button" class="btn" id="nexts">10≫</button>')
+            .insertAfter('#DiskDashboard-popupTable_paginate .paginate_button:last');
+            $('<button type="button" class="btn" id="after">≪10</button>')
+            .insertBefore('#DiskDashboard-popupTable_paginate .paginate_button:first');
+            }
+        }
+});
+
+	$(document).on('click', '#nexts, #after', function() {
+        var current_page = dashboardpopupTable.page();
+        var total_pages = dashboardpopupTable.page.info().pages;
+        if ($(this).attr('id') == 'nexts') {
+                if (current_page + 10 < total_pages) {
+                    dashboardpopupTable.page(current_page + 10).draw('page');
+                } else {
+                    dashboardpopupTable.page(total_pages - 1).draw('page');
+                }
+                } else {
+                    dashboardpopupTable.page(Math.max(current_page - 10, 0)).draw('page');
+                }
+});
+        $(document).ready(function() {
+        var customStyle = '<style>#nexts, #after {color: #FFFFFF; background-color: #FFFFFF26; margin-left: 5px; height: 33px; padding: 6px 12px; font-size: 15px; padding: 6px 12px; margin-right: 5px;}</style>';
+        $('head').append(customStyle);
+});
 };
 var alarmCasehandleRenderDashboardPopupTableData = function () {
 	var dashboardpopupTable = $('#alarmCaseDashboard-popupTable').DataTable({
@@ -693,8 +952,40 @@ var alarmCasehandleRenderDashboardPopupTableData = function () {
 			"infoFiltered": "(전체 _MAX_ 건 중 검색결과)",
 			"infoPostFix": "",
 		},
+		pagingType: 'numbers',
 
-	});
+        drawCallback: function() {
+            var current_page = dashboardpopupTable.page();
+            var total_pages = dashboardpopupTable.page.info().pages;
+            $('#nexts').remove();
+            $('#after').remove();
+
+            if (total_pages > 10){
+            $('<button type="button" class="btn" id="nexts">10≫</button>')
+            .insertAfter('#alarmCaseDashboard-popupTable_paginate .paginate_button:last');
+            $('<button type="button" class="btn" id="after">≪10</button>')
+            .insertBefore('#alarmCaseDashboard-popupTable_paginate .paginate_button:first');
+            }
+        }
+});
+
+	$(document).on('click', '#nexts, #after', function() {
+        var current_page = dashboardpopupTable.page();
+        var total_pages = dashboardpopupTable.page.info().pages;
+        if ($(this).attr('id') == 'nexts') {
+                if (current_page + 10 < total_pages) {
+                    dashboardpopupTable.page(current_page + 10).draw('page');
+                } else {
+                    dashboardpopupTable.page(total_pages - 1).draw('page');
+                }
+                } else {
+                    dashboardpopupTable.page(Math.max(current_page - 10, 0)).draw('page');
+                }
+});
+        $(document).ready(function() {
+        var customStyle = '<style>#nexts, #after {color: #FFFFFF; background-color: #FFFFFF26; margin-left: 5px; height: 33px; padding: 6px 12px; font-size: 15px; padding: 6px 12px; margin-right: 5px;}</style>';
+        $('head').append(customStyle);
+});
 };
 
 
