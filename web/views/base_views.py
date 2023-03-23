@@ -213,6 +213,23 @@ def runningService_moreInfo_paging(request):
                   }
     return JsonResponse(returnData)
 
+@csrf_exempt
+def runningService_moreInfo_paging2(request):
+    draw = int(request.POST.get('draw'))
+    start = int(request.POST.get('start'))
+    length = int(request.POST.get('length'))
+    search = request.POST.get('search[value]')
+    page = math.ceil(start / length) + 1
+    data = [ str(length), str(page), str(search)]
+    SMD = PDPI('statistics', 'runningServiceMore2', data)
+    SMC = PDPI('statistics', 'runningServiceCount2', data)
+    RD = {"item": SMD}
+    returnData = {'data': RD,
+                  'draw': draw,
+                  'recordsTotal': SMC,
+                  'recordsFiltered': SMC,
+                  }
+    return JsonResponse(returnData)
 def memory_moreInfo(request):
     # memoryMoreDataList = DCDL["memoryMoreDataList"]
     # chartData = {"memoryMoreDataList": memoryMoreDataList}

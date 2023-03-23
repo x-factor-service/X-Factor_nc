@@ -317,7 +317,8 @@ var serverhandleRenderDashboardPopupTableData = function () {
 
 	});
 };
-var runningServicehandleRenderDashboardPopupTableData = function () {
+var runningServicehandleRenderDashboardPopupTableData = function (url) {
+    var pagingValue = url;
 	var dashboardpopupTable = $('#runningServiceDashboard-popupTable').DataTable({
 		dom: "<'d-flex justify-content-between mb-3'<'col-md-4 mb-md-0'l><'text-right'<'d-flex justify-content-end'fB>>>t<'align-items-center d-flex justify-content-between'<' mr-auto col-md-6 mb-md-0 mt-n2 'i><'mb-0 col-md-6'p>>",
 		lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
@@ -327,7 +328,7 @@ var runningServicehandleRenderDashboardPopupTableData = function () {
 		serverSide: true,
 		displayLength: false,
 		ajax: {
-			url: 'paging/',
+			url: pagingValue ,
 			type: "POST",
 			dataSrc: function (res) {
 				var data = res.data.item;
@@ -726,8 +727,18 @@ $(document).ready(function () {
 
 		serverhandleRenderDashboardPopupTableData();
 	}else if($("#runningServiceDashboard-popupTable").length > 0){
+	    runningServicehandleRenderDashboardPopupTableData("paging/");
+	    var checkbox = document.getElementById("check_btn");
+            checkbox.addEventListener("change", function() {
+              if (checkbox.checked) {
+                $('#runningServiceDashboard-popupTable').DataTable().destroy();
+                runningServicehandleRenderDashboardPopupTableData("paging/");
+              } else {
+                $('#runningServiceDashboard-popupTable').DataTable().destroy();
+                runningServicehandleRenderDashboardPopupTableData("paging2/");
+              }
+            });
 
-		runningServicehandleRenderDashboardPopupTableData();
 	}else if($("#physicalServerDashboard-popupTable").length > 0){
 
 		physicalServerhandleRenderDashboardPopupTableData();

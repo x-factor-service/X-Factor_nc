@@ -74,6 +74,7 @@
       "FileType" : ".json"
     },
     "RunningService_Except" : {
+      "USE" : "true",
       "Location" : "/running services.xlsx"
     }
   }

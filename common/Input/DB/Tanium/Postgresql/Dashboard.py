@@ -20,14 +20,7 @@ StatisticsTNM = SETTING['DB']['StatisticsTNM']
 BS = SETTING['FILE']
 DBSelectTime = SETTING['DB']['DBSelectTime']
 day = datetime.today().strftime("%Y-%m-%d")
-
-# runningservice_locate = SETTING['FILE']['RunningService_Except']['Location']
-# readXls = pd.read_excel(runningservice_locate)
-# running_remove = []
-# for i in readXls.index :
-#     running_remove.append(readXls['Running Service'][i])
-    #print(i, readXls['Running Service'][i])
-    #print(type(running_remove))
+RSU = SETTING['FILE']['RunningService_Except']['USE']
 
 
 def plug_in(table, day, type):
@@ -183,7 +176,94 @@ def plug_in(table, day, type):
                             statistics_collection_date >= '""" + fiveMinutesAgo + """'
                 """
             elif day == 'runningServiceMore':
-                query = """
+                try:
+                    runningservice_locate = SETTING['FILE']['RunningService_Except']['Location']
+                    readXls = pd.read_excel(runningservice_locate)
+                    running_remove = []
+                    for i in readXls.index:
+                        running_remove.append(readXls['Running Service'][i])
+                        # print(i, readXls['Running Service'][i])
+                    running_tu = tuple(running_remove)
+                    running_remove = str(running_tu)
+                    query = """
+                                select
+                                    item, item_count
+                                from
+                                    minutely_statistics
+                                where
+                                    classification = 'running_service'
+                                and
+                                    item NOT IN """+running_remove+"""
+                                and 
+                                
+                                    statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                                and
+                                    (item Ilike '%""" + type[2] + """%' or
+                                    item_count Ilike '%""" + type[2] + """%')
+                                order by item_count::INTEGER desc
+                                LIMIT """ + type[0] + """
+                                OFFSET (""" + type[1] + """-1) * """ + type[0] + """
+                            """
+                except :
+                    query = """
+                                select
+                                    item, item_count
+                                from
+                                    minutely_statistics
+                                where
+                                    classification = 'running_service'
+                                and 
+                                    statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                                and
+                                    (item Ilike '%""" + type[2] + """%' or
+                                    item_count Ilike '%""" + type[2] + """%')
+                                order by item_count::INTEGER desc
+                                LIMIT """ + type[0] + """
+                                OFFSET (""" + type[1] + """-1) * """ + type[0] + """
+                            """
+
+            elif day == 'runningServiceCount':
+                try:
+                    runningservice_locate = SETTING['FILE']['RunningService_Except']['Location']
+                    readXls = pd.read_excel(runningservice_locate)
+                    running_remove = []
+                    for i in readXls.index:
+                        running_remove.append(readXls['Running Service'][i])
+                        # print(i, readXls['Running Service'][i])
+                    running_tu = tuple(running_remove)
+                    running_remove = str(running_tu)
+                    query = """
+                                select
+                                    COUNT(*)
+                                from
+                                    minutely_statistics
+                                where
+                                    item NOT IN """+running_remove+"""
+                                and
+                                    (item Ilike '%""" + type[2] + """%' or
+                                    item_count Ilike '%""" + type[2] + """%')
+                                and 
+                                    classification = 'running_service'
+                                and 
+                                    statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                        """
+                except :
+                    query = """
+                            select
+                                COUNT(*)
+                            from
+                                minutely_statistics
+                            where
+                                (item Ilike '%""" + type[2] + """%' or
+                                item_count Ilike '%""" + type[2] + """%')
+                            and 
+                                classification = 'running_service'
+                            and 
+                                statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                    """
+
+            elif day == 'runningServiceMore2':
+                    query = """
                             select
                                 item, item_count
                             from
@@ -198,9 +278,9 @@ def plug_in(table, day, type):
                             order by item_count::INTEGER desc
                             LIMIT """ + type[0] + """
                             OFFSET (""" + type[1] + """-1) * """ + type[0] + """
-
                         """
-            elif day == 'runningServiceCount':
+
+            elif day == 'runningServiceCount2':
                 query = """
                         select
                             COUNT(*)
@@ -546,18 +626,45 @@ def plug_in(table, day, type):
                         """
                 # NC running service chart
                 elif type == 'running':
-                    query = """
-                        select
-                            item, item_count
-                        from
-                            minutely_statistics
-                        where 
-                            classification = 'running_service'
-                        and 
-                            statistics_collection_date >= '""" + fiveMinutesAgo + """'
-                        order by
-                            item_count::INTEGER desc limit 5
-                    """
+                    # 러닝서비스 프로그램 지우기
+                    try:
+                        runningservice_locate = SETTING['FILE']['RunningService_Except']['Location']
+                        readXls = pd.read_excel(runningservice_locate, na_values='None')
+                        running_remove = []
+                        for i in readXls.index:
+                            running_remove.append(readXls['Running Service'][i])
+                            # print(i, readXls['Running Service'][i])
+                        running_tu = tuple(running_remove)
+                        running_remove = str(running_tu)
+                        query = """
+                            select
+                                item, item_count
+                            from
+                                minutely_statistics
+                            where 
+                                classification = 'running_service'
+                            and
+                                item NOT IN """+running_remove+"""
+                            and 
+                                statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                            
+                            order by
+                                item_count::INTEGER desc limit 5
+                        """
+                    except:
+                        query = """
+                                select
+                                    item, item_count
+                                from
+                                    minutely_statistics
+                                where 
+                                    classification = 'running_service'
+                                and 
+                                    statistics_collection_date >= '""" + fiveMinutesAgo + """'
+
+                                order by
+                                    item_count::INTEGER desc limit 5
+                            """
                 #알람케이스
                 elif type == 'usage':
                     query = """
@@ -860,7 +967,7 @@ def plug_in(table, day, type):
                         ('usage', str(R[3]))
                     )
                 ))
-            elif day == 'osMore' or day == 'serverBandByMore' or day == 'runningServiceMore' or day == 'physicalServerMore':
+            elif day == 'osMore' or day == 'serverBandByMore' or day == 'runningServiceMore' or day == 'runningServiceMore2' or day == 'physicalServerMore':
                 index = (int(type[1]) - 1) * int(type[0]) + i
                 SDL.append(dict(
                     (
