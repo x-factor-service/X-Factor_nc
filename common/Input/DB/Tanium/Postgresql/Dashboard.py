@@ -214,6 +214,102 @@ def plug_in(table, day, type):
                         and 
                             statistics_collection_date >= '""" + fiveMinutesAgo + """'
                 """
+            # -------------------------------------------종윤-----------------------------------------
+            elif day == 'connectDestinationIpMore':
+                query = """
+                        select
+                            ms.item, ms.item_count,msl.computer_name
+                        from 
+                            (select * from minutely_statistics ms where
+                            classification = 'session_ip' and item != 'NO' order by item_count::INTEGER desc limit 100) as ms                             
+                        left join 
+                            minutely_statistics_list as msl                        
+                        on 
+                            split_part(ms.item,':',1) = msl.ipv_address  
+                        where     
+                            classification = 'session_ip' and item != 'NO'
+                        and
+                             statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                        and
+                             (item Ilike '%""" + type[2] + """%' or             
+                             item_count Ilike '%""" + type[2] + """%')
+                        order by 
+                            item_count::INTEGER desc
+                        LIMIT """ + type[0] + """
+                        OFFSET (""" + type[1] + """-1) * """ + type[0] + """
+
+                
+                
+                
+                        """
+
+
+
+                # query = """
+                #         select
+                #             item, item_count, minutely_statistics_list.computer_name
+                #         from
+                #             minutely_statistics
+                #         join minutely_statistics_list
+                #         on split_part(minutely_statistics.item,':',1) = minutely_statistics_list.ipv_address
+                #         where
+                #             classification = 'session_ip' and item != 'NO'
+                #         and
+                #             statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                #         and
+                #             (item Ilike '%""" + type[2] + """%' or
+                #
+                #             item_count Ilike '%""" + type[2] + """%')
+                #         order by item_count::INTEGER desc
+                #         LIMIT """ + type[0] + """
+                #         OFFSET (""" + type[1] + """-1) * """ + type[0] + """
+                #     """
+
+            elif day == 'connectDestinationIpCount':
+                query = """
+                        select
+                            Count(*)
+                        from 
+                            (select * from minutely_statistics ms where
+                            classification = 'session_ip' and item != 'NO' order by item_count::INTEGER desc limit 100) as ms 
+                            
+                        left join 
+                            minutely_statistics_list as msl
+                        on 
+                            split_part(ms.item,':',1) = msl.ipv_address
+                        where
+                            (item Ilike '%""" + type[2] + """%' or
+
+                            item_count Ilike '%""" + type[2] + """%')
+                        and
+                            classification = 'session_ip' and item != 'NO'
+                        and
+                            statistics_collection_date >= '""" + fiveMinutesAgo + """'
+
+                    """
+                # query = """
+                #         select
+                #             Count(*)
+                #         from
+                #             minutely_statistics
+                #
+                #         join minutely_statistics_list
+                #         on split_part(minutely_statistics.item,':',1) = minutely_statistics_list.ipv_address
+                #         where
+                #             (item Ilike '%""" + type[2] + """%' or
+                #
+                #             item_count Ilike '%""" + type[2] + """%')
+                #         and
+                #             classification = 'session_ip' and item != 'NO'
+                #         and
+                #             statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                #
+                #     """
+
+
+
+# ---------------------------------------------------------------------------------------------------------
+
             elif day == 'physicalServerMore':
                 query = """
                             select
@@ -639,15 +735,32 @@ def plug_in(table, day, type):
                             and 
                                 to_char(statistics_collection_date, 'YYYY-MM-DD') = '""" + yesterday + """'
                     """
+                # elif type == 'ip':
+                #     query = """
+                #             select
+                #                 item, item_count
+                #             from
+                #                 minutely_statistics
+                #             where
+                #                 classification = 'session_ip' and item != 'NO'
+                #             and
+                #                 statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                #             order by
+                #                 item_count::INTEGER desc limit 3
+                #     """
+
+                # -------------------------------------------종윤-----------------------------------------
                 elif type == 'ip':
                     query = """
                             select
-                                item, item_count
+                                item, item_count, minutely_statistics_list.computer_name
                             from
                                 minutely_statistics
+                            join minutely_statistics_list
+                            on split_part(minutely_statistics.item,':',1) = minutely_statistics_list.ipv_address
                             where
                                 classification = 'session_ip' and item != 'NO'
-                            and 
+                            and
                                 statistics_collection_date >= '""" + fiveMinutesAgo + """'
                             order by
                                 item_count::INTEGER desc limit 3
@@ -890,6 +1003,20 @@ def plug_in(table, day, type):
                         ('cpuusage', R[3]),
                         ('driveusage', R[4]),
                         ('date', R[5]),
+
+                    )
+                ))
+
+            elif day == 'connectDestinationIpMore':
+
+                index = (int(type[1]) - 1) * int(type[0]) + i
+                name = R[2] if R[2] else 'undefined'
+                SDL.append(dict(
+                    (
+                        ('index', index),
+                        ('ip', R[0]),
+                        ('count', R[1]),
+                        ('name', name),
                     )
                 ))
             else:

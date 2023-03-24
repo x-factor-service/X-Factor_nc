@@ -213,6 +213,37 @@ def runningService_moreInfo_paging(request):
                   }
     return JsonResponse(returnData)
 
+def connectDestinationIp_moreInfo(request):
+    return render(request, 'popup/connectDestinationIp_moreInfo.html')
+@csrf_exempt
+def connectDestinationIp_moreInfo_paging(request):
+    draw = int(request.POST.get('draw'))
+    start = int(request.POST.get('start'))
+    length = int(request.POST.get('length'))
+    search = request.POST.get('search[value]')
+    page = math.ceil(start / length) + 1
+    data = [ str(length), str(page), str(search)]
+
+
+    SMD = PDPI('statistics', 'connectDestinationIpMore', data)
+# ----------------------------종윤 -----------------------------------
+    for i in range(len(SMD)):
+        ip = SMD[i]['ip']
+        SMD[i]['ip'] = ip.split(':')[0]
+        SMD[i]['port'] = ip.split(':')[1]
+
+# ----------------------------------------------------------------
+    SMC = PDPI('statistics', 'connectDestinationIpCount', data)
+
+    RD = {"item": SMD}
+    returnData = {'data': RD,
+                  'draw': draw,
+                  'recordsTotal': SMC,
+                  'recordsFiltered': SMC,
+                  }
+    return JsonResponse(returnData)
+
+
 def memory_moreInfo(request):
     # memoryMoreDataList = DCDL["memoryMoreDataList"]
     # chartData = {"memoryMoreDataList": memoryMoreDataList}
