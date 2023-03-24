@@ -250,7 +250,8 @@ def DashboardData():
                             split = connectIpData[i][0].split(':')
                             ip = split[0]
                             host = split[1]
-                            connectIpDataList.append({'ip': ip, 'host': host, 'count': connectIpData[i][1]})
+                            name = connectIpData[i][2]
+                            connectIpDataList.append({'ip': ip, 'name': name , 'host': host, 'count': connectIpData[i][1]})
                     if not connectIpData:
                         connectIpDataExcept = [{'ip': '-', 'host': '-', 'count': '-' }]
                         connectIpDataList = connectIpDataExcept * 3

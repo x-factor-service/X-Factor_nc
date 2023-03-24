@@ -40,6 +40,10 @@ urlpatterns = [
     path('gpuServer_moreInfo/paging/', base_views.gpuServer_moreInfo_paging, name='gpuServer_moreInfo_paging'),
     path('alarmCase_moreInfo/', base_views.alarmCase_moreInfo, name='alarmCase_moreInfo'),
     path('alarmCase_moreInfo/paging/', base_views.alarmCase_moreInfo_paging, name='alarmCase_moreInfo_paging'),
+    # -------------------------------------- 종윤-------------------------------------
+    path('connectDestinationIp_moreInfo/', base_views.connectDestinationIp_moreInfo, name='connectDestinationIp_moreInfo'),
+    path('connectDestinationIp_moreInfo/paging/', base_views.connectDestinationIp_moreInfo_paging, name='connectDestinationIp_moreInfo_paging'),
+
     ########################### 유저 가이드 ##########################################
     path('documentation_ug/', base_views.userGuide_docs_ug, name='userGuide_docs_ug'),
     path('specification_ug/', base_views.specification_ug, name='specification_ug'),

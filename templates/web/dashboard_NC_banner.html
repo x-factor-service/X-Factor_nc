@@ -575,6 +575,7 @@
                 <!-- BEGIN card-body -->
                 <div class="card-body h-150px">
                     <!-- BEGIN title -->
+                    <button type="button" class="btn btn-outline-link btn-sm btn-moreInfo connectDestinationIp-moreInfo"><i class="fas fa-ellipsis-h"></i></button>
                     <div class="d-flex fw-bold fs-12px">
                         <div class="flex-grow-1 text-opacity-75">최다 연결 Destination IP/Port (상위 3개)</div>
                     </div>
@@ -584,10 +585,11 @@
                         <!-- END stat-sm -->
                         {% if chartData.connectIpDataList %}
                         <div class="fs-12px">
-                            <table class="table-sm-se w-90 text-white text-opacity-60" style="margin: 0 auto; vertical-align: middle;">
+                            <table class="table-sm-se w-90 text-white text-opacity-60" style="margin: 0 auto; vertical-align: middle; table-layout: fixed;">
                                 <thead>
                                 <tr class="w-50 fw-bold">
                                     <td class="text-start text-truncate">Destination IP</td>
+                                    <td class="text-center text-truncate">Hostname</td>
                                     <td class="text-center text-truncate">Port</td>
                                     <td class="text-center text-truncate">Count</td>
                                 </tr>
@@ -595,7 +597,8 @@
                                 <tbody>
                                 {% for data in chartData.connectIpDataList %}
                                 <tr class="text-opacity-60">
-                                    <td class="w-150px text-start text-truncate" title="{{ data.ip }}">{{ data.ip }}</td>
+                                    <td class="text-start text-truncate" title="{{ data.ip }}">{{ data.ip }}</td>
+                                    <td class="text-center text-truncate" title="{{ data.host }}">{{ data.name }}</td>
                                     <td class="text-center text-truncate" title="{{ data.host }}">{{ data.host }}</td>
                                     <td class="text-center text-truncate" title="{{ data.count }}">{{ data.count }}</td>
                                 </tr>
