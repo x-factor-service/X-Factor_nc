@@ -241,7 +241,7 @@
                         {% if chartData.server_LChartDataList %}
                         <div class="d-flex fw-bold fs-12px mb-2">
                             <div class="flex-grow-1">Virtual 서버 수량 그래프 (최근 30일) </div>
-                            <div class="d-flex fw-bold fs-16px mb-2"><br>Virtual Server : {{ chartData.server_LChartDataList.0.data.0.data | last }}</div>
+                            <div class="d-flex fw-bold fs-16px mb-2"><br>Current : {{ chartData.server_LChartDataList.0.data.0.data | last }}</div>
                         </div>
                         {% endif %}
                         <!-- END title -->
@@ -275,7 +275,7 @@
                         {% if chartData.server_LChartDataList %}
                         <div class="d-flex fw-bold fs-12px mb-2">
                             <div class="flex-grow-1">Physical 서버 수량 그래프 (최근 30일)</div>
-                            <div class="d-flex fw-bold fs-16px mb-2"><br>Physical Server : {{ chartData.server_LChartDataList.0.data.1.data | last }}</div>
+                            <div class="d-flex fw-bold fs-16px mb-2"><br>Current : {{ chartData.server_LChartDataList.0.data.1.data | last }}</div>
                         </div>
                         {% endif %}
 
@@ -588,17 +588,17 @@
                             <table class="table-sm-se w-90 text-white text-opacity-60" style="margin: 0 auto; vertical-align: middle; table-layout: fixed;">
                                 <thead>
                                 <tr class="w-50 fw-bold">
-                                    <td class="text-start text-truncate">Destination IP</td>
-                                    <td class="text-center text-truncate">Hostname</td>
-                                    <td class="text-center text-truncate">Port</td>
-                                    <td class="text-center text-truncate">Count</td>
+                                    <td class="text-start text-truncate width-35">Destination IP</td>
+                                    <td class="text-start text-truncate width-35">Hostname</td>
+                                    <td class="text-center text-truncate width-15">Port</td>
+                                    <td class="text-center text-truncate width-15">Count</td>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% for data in chartData.connectIpDataList %}
                                 <tr class="text-opacity-60">
                                     <td class="text-start text-truncate" title="{{ data.ip }}">{{ data.ip }}</td>
-                                    <td class="text-center text-truncate" title="{{ data.host }}">{{ data.name }}</td>
+                                    <td class="text-start text-truncate" title="{{ data.host }}">{{ data.name }}</td>
                                     <td class="text-center text-truncate" title="{{ data.host }}">{{ data.host }}</td>
                                     <td class="text-center text-truncate" title="{{ data.count }}">{{ data.count }}</td>
                                 </tr>
@@ -632,6 +632,7 @@
                 <!-- BEGIN card-body -->
                 <div class="card-body h-150px">
                     <!-- BEGIN title -->
+                    <button type="button" class="btn btn-outline-link btn-sm btn-moreInfo connectSourceIp-moreInfo"><i class="fas fa-ellipsis-h"></i></button>
                     <div class="d-flex fw-bold fs-12px">
                         <div class="flex-grow-1 text-opacity-75">최다 연결 Source IP (상위 3개)</div>
                     </div>
@@ -644,8 +645,8 @@
                             <table class="table-sm-se w-90 text-white text-opacity-60" style="margin: 0 auto; vertical-align: middle;">
                                 <thead>
                                 <tr class="w-50 fw-bold">
-                                    <td class="text-start text-truncate">Source IP</td>
-                                    <td class="text-center text-truncate">Hostname</td>
+                                    <td class="tw-l150 text-truncate">Source IP</td>
+                                    <td class="text-start text-truncate">Hostname</td>
                                     <td class="text-center text-truncate">Count</td>
                                 </tr>
                                 </thead>
@@ -653,7 +654,7 @@
                                 {% for data in chartData.connectServerDataList %}
                                 <tr class="text-opacity-60">
                                     <td class="text-start text-truncate" title="{{ data.ip }}">{{ data.ip }}</td>
-                                    <td class="w-180px text-center text-truncate" title="{{ data.name }}">{{ data.name }}</td>
+                                    <td class="text-start text-truncate" title="{{ data.name }}">{{ data.name }}</td>
                                     <td class="w-80px text-center text-truncate" title="{{ data.count }}">{{ data.count }}</td>
                                 </tr>
                                 {% endfor %}

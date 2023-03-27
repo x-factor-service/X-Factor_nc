@@ -301,7 +301,7 @@ def plug_in(table, day, type):
                             ms.item, ms.item_count,msl.computer_name
                         from 
                             (select * from minutely_statistics ms where
-                            classification = 'session_ip' and item != 'NO' order by item_count::INTEGER desc limit 100) as ms                             
+                            classification = 'session_ip' and item != 'NO' order by item_count::INTEGER desc limit 50) as ms                             
                         left join 
                             minutely_statistics_list as msl                        
                         on 
@@ -309,7 +309,7 @@ def plug_in(table, day, type):
                         where     
                             classification = 'session_ip' and item != 'NO'
                         and
-                             statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                            asset_list_statistics_collection_date >= '""" + fiveMinutesAgo + """'
                         and
                              (item Ilike '%""" + type[2] + """%' or             
                              item_count Ilike '%""" + type[2] + """%')
@@ -351,7 +351,7 @@ def plug_in(table, day, type):
                             Count(*)
                         from 
                             (select * from minutely_statistics ms where
-                            classification = 'session_ip' and item != 'NO' order by item_count::INTEGER desc limit 100) as ms 
+                            classification = 'session_ip' and item != 'NO' order by item_count::INTEGER desc limit 50) as ms 
                             
                         left join 
                             minutely_statistics_list as msl
@@ -359,12 +359,11 @@ def plug_in(table, day, type):
                             split_part(ms.item,':',1) = msl.ipv_address
                         where
                             (item Ilike '%""" + type[2] + """%' or
-
                             item_count Ilike '%""" + type[2] + """%')
                         and
                             classification = 'session_ip' and item != 'NO'
                         and
-                            statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                            asset_list_statistics_collection_date >= '""" + fiveMinutesAgo + """'
 
                     """
                 # query = """
@@ -385,7 +384,38 @@ def plug_in(table, day, type):
                 #             statistics_collection_date >= '""" + fiveMinutesAgo + """'
                 #
                 #     """
+            elif day == 'connectSourceIpMore':
 
+                query = """
+                        select
+                            ipv_address, computer_name, session_ip_count
+                        from
+                            minutely_statistics_list
+                        where
+                            asset_list_statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                        and NOT ipv_address IN ('unconfirmed')
+                
+                        and
+                             (ipv_address Ilike '%""" + type[2] + """%' or             
+                             session_ip_count Ilike '%""" + type[2] + """%' or           
+                             computer_name Ilike '%""" + type[2] + """%')
+                        order by 
+                            session_ip_count::INTEGER desc
+                        LIMIT """ + type[0] + """
+                        OFFSET (""" + type[1] + """-1) * """ + type[0] + """
+                
+                """
+
+            elif day == 'connectSourceIpCount':
+                query = """
+                        select
+                            Count(*)
+                        from 
+                            minutely_statistics_list                            
+                        where
+                            asset_list_statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                        and NOT ipv_address IN ('unconfirmed')
+                    """
 
 
 # ---------------------------------------------------------------------------------------------------------
@@ -1124,6 +1154,20 @@ def plug_in(table, day, type):
                         ('ip', R[0]),
                         ('count', R[1]),
                         ('name', name),
+
+                    )
+                ))
+
+            elif day == 'connectSourceIpMore':
+
+                index = (int(type[1]) - 1) * int(type[0]) + i
+                SDL.append(dict(
+                    (
+                        ('index', index),
+                        ('ip', R[0]),
+                        ('name', R[1]),
+                        ('count', R[2]),
+
                     )
                 ))
             else:

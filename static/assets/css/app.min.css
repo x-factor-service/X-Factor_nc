@@ -30803,3 +30803,15 @@ label::before{
 input:checked+labl::before{
 	background-image:url("checkboxWhite.png");
 }
+
+/* session ip css 추가*/
+.width-35 {
+    width : 35%;
+}
+.width-15 {
+    width : 15%;
+}
+.tw-l150{
+    text-align : left;
+    width : 150px;
+}

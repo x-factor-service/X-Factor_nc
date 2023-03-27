@@ -3,7 +3,7 @@
 <html lang="ko">
 
 <head>
-  <title>X-Factor</title>
+  <title>Dashboard</title>
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -71,7 +71,7 @@
 </head>
 
 <body class="theme-orange">
-    {% if request.path == '/osVersion_moreInfo/' or request.path == '/serverBandBy_moreInfo/' or request.path == '/runningService_moreInfo/' or request.path == '/memory_moreInfo/' or request.path == '/cpu_moreInfo/' or request.path == '/disk_moreInfo/' or request.path == '/physicalServer_moreInfo/' or request.path == '/gpuServer_moreInfo/' or request.path == '/alarmCase_moreInfo/' or request.path == '/connectDestinationIp_moreInfo/' %}
+    {% if request.path == '/osVersion_moreInfo/' or request.path == '/serverBandBy_moreInfo/' or request.path == '/runningService_moreInfo/' or request.path == '/memory_moreInfo/' or request.path == '/cpu_moreInfo/' or request.path == '/disk_moreInfo/' or request.path == '/physicalServer_moreInfo/' or request.path == '/gpuServer_moreInfo/' or request.path == '/alarmCase_moreInfo/' or request.path == '/connectDestinationIp_moreInfo/' or request.path == '/connectSourceIp_moreInfo/' %}
     {% elif request.path == '/documentation_ug/' or request.path == '/specification_ug/' or request.path == '/start_ug/' or request.path == '/dashboard_public_ug/' or request.path == '/dashboard_chart_ug/' or request.path == '/dashboard_etc_ug/' or request.path == '/weak_public_ug/' or request.path == '/weak_windows_ug/' or request.path == '/weak_linux_ug/' or request.path == '/report_public_ug/' or request.path == '/report_all_ug/' or request.path == '/technical_support_ug/' or request.path == '/faq_ug/' or request.path == '/setting_ug/' %}
     <div class="app">
       <!-- 네비게이션바 -->
@@ -203,6 +203,10 @@
 
     $('.connectDestinationIp-moreInfo').on('click',function(){
         window.open("../connectDestinationIp_moreInfo", "connectDestinationIp", "width=1200, height=650");
+    });
+
+    $('.connectSourceIp-moreInfo').on('click',function(){
+        window.open("../connectSourceIp_moreInfo", "connectSourceIp", "width=1200, height=650");
     });
 
     $('.runningService-moreInfo').on('click',function(){
