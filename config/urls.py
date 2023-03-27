@@ -43,7 +43,8 @@ urlpatterns = [
     # -------------------------------------- 종윤-------------------------------------
     path('connectDestinationIp_moreInfo/', base_views.connectDestinationIp_moreInfo, name='connectDestinationIp_moreInfo'),
     path('connectDestinationIp_moreInfo/paging/', base_views.connectDestinationIp_moreInfo_paging, name='connectDestinationIp_moreInfo_paging'),
-
+    path('connectSourceIp_moreInfo/', base_views.connectSourceIp_moreInfo, name='connectSourceIp_moreInfo'),
+    path('connectSourceIp_moreInfo/paging/', base_views.connectSourceIp_moreInfo_paging, name='connectSourceIp_moreInfo_paging'),
     ########################### 유저 가이드 ##########################################
     path('documentation_ug/', base_views.userGuide_docs_ug, name='userGuide_docs_ug'),
     path('specification_ug/', base_views.specification_ug, name='specification_ug'),
