@@ -240,8 +240,8 @@
                         <!-- BEGIN title -->
                         {% if chartData.server_LChartDataList %}
                         <div class="d-flex fw-bold fs-12px mb-2">
-                            <div class="flex-grow-1">Virtual 서버 수량 그래프 (최근 30일) </div>
-                            <div class="d-flex fw-bold fs-16px mb-2"><br>Current : {{ chartData.server_LChartDataList.0.data.0.data | last }}</div>
+                            <div class="flex-grow-1">Virtual 서버 수량 그래프 (최근 1년) </div>
+                            <div class="d-flex fw-bold fs-17px mb-2"><br>Current : {{ chartData.server_LChartDataList.0.data.0.data | last }} unit</div>
                         </div>
                         {% endif %}
                         <!-- END title -->
@@ -274,8 +274,8 @@
                         <!-- BEGIN title -->
                         {% if chartData.server_LChartDataList %}
                         <div class="d-flex fw-bold fs-12px mb-2">
-                            <div class="flex-grow-1">Physical 서버 수량 그래프 (최근 30일)</div>
-                            <div class="d-flex fw-bold fs-16px mb-2"><br>Current : {{ chartData.server_LChartDataList.0.data.1.data | last }}</div>
+                            <div class="flex-grow-1">Physical 서버 수량 그래프 (최근 1년)</div>
+                            <div class="d-flex fw-bold fs-17px mb-2"><br>Current : {{ chartData.server_LChartDataList.0.data.1.data | last }} unit</div>
                         </div>
                         {% endif %}
 

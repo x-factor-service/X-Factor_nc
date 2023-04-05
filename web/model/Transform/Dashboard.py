@@ -301,6 +301,7 @@ def chart_data(data, type):
                     ChartDataList.append({"name": data['name'][i], "value": int(data['value_y'][i]), "roc": data['ROC'][i]})
 
     # NC 서버 총수량 추이그래프 (30일)
+    # -----------------------------------------수정 종윤 -----------------------------
     if type == 'Monthly_Line':
         V_date_list = []
         V_count = []
@@ -312,10 +313,14 @@ def chart_data(data, type):
                 V_date_list.append(str(data[i][2]))
             else:
                 count.append(data[i][1])
-                if str(data[i][2]).split("-")[2][0:2].startswith('0'):
-                    date_list.append(str(data[i][2]).split("-")[2][0:2].replace('0', ""))
+                if str(data[i][2]).split("-")[1]:
+                    date_list.append(str(data[i][2])[5:7]+'월')
                 else:
-                    date_list.append(str(data[i][2]).split("-")[2][0:2])
+                    date_list.append(str(data[i][2])[5:7]+'월')
+                # if str(data[i][2]).split("-")[2][0:2].startswith('0'):
+                #     date_list.append(str(data[i][2]).split("-")[2][0:2].replace('0', ""))
+                # else:
+                #     date_list.append(str(data[i][2]).split("-")[2][0:2])
 
         ChartDataList = [{"data": [{"name": "virtual", "data": V_count}, {"name": "physical", "data": count}], "date": date_list}]
 
