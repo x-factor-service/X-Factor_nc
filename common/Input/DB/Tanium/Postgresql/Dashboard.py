@@ -31,7 +31,19 @@ def plug_in(table, day, type):
         fiveDay = (datetime.today() - timedelta(5)).strftime("%Y-%m-%d")
         #monthDay = (datetime.today() - timedelta(30)).strftime("%Y-%m-%d")
         monthDay = (datetime.today() - relativedelta(days=31)).strftime("%Y-%m-%d")
+        # ----------------------서버수량그래프 데이터 변경 추가 종윤 ----------------------
+        lastYear = (datetime.today() - relativedelta(months=12)).strftime("%Y-%m-%d")
+        lastDay = (datetime.today() - relativedelta(months=11)).strftime("%Y-%m-%d")
+        lastMonth = pd.date_range(lastDay, periods=12, freq='M').strftime("%Y-%m-%d")
+        Reportday2 = (datetime.today() - timedelta(2)).strftime("%Y-%m-%d")
+        Reportday = (datetime.today() - timedelta(1)).strftime("%Y-%m-%d")
 
+        a = []
+        for i in lastMonth:
+            a.append(str(i))
+        LM = tuple(a)
+
+        # ------------------------------------------------------------------------------
         month_str = (datetime.today() - relativedelta(months=1)).strftime("%Y-%m-%d")
         SDL = []
         Conn = psycopg2.connect(
@@ -301,7 +313,7 @@ def plug_in(table, day, type):
                             ms.item, ms.item_count,msl.computer_name
                         from 
                             (select * from minutely_statistics ms where
-                            classification = 'session_ip' and item != 'NO' order by item_count::INTEGER desc limit 50) as ms                             
+                            classification = 'session_ip' and statistics_collection_date >= '""" + fiveMinutesAgo + """' and item != 'NO' order by item_count::INTEGER desc limit 50) as ms                             
                         left join 
                             minutely_statistics_list as msl                        
                         on 
@@ -309,7 +321,7 @@ def plug_in(table, day, type):
                         where     
                             classification = 'session_ip' and item != 'NO'
                         and
-                            asset_list_statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                            statistics_collection_date >= '""" + fiveMinutesAgo + """'
                         and
                              (item Ilike '%""" + type[2] + """%' or             
                              item_count Ilike '%""" + type[2] + """%')
@@ -351,7 +363,7 @@ def plug_in(table, day, type):
                             Count(*)
                         from 
                             (select * from minutely_statistics ms where
-                            classification = 'session_ip' and item != 'NO' order by item_count::INTEGER desc limit 50) as ms 
+                            classification = 'session_ip' and statistics_collection_date >= '""" + fiveMinutesAgo + """' and item != 'NO' order by item_count::INTEGER desc limit 50) as ms 
                             
                         left join 
                             minutely_statistics_list as msl
@@ -363,7 +375,7 @@ def plug_in(table, day, type):
                         and
                             classification = 'session_ip' and item != 'NO'
                         and
-                            asset_list_statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                            statistics_collection_date >= '""" + fiveMinutesAgo + """'
 
                     """
                 # query = """
@@ -905,35 +917,70 @@ def plug_in(table, day, type):
             # NC 서버 총 수량 추이 그래프(30일)
             if day == 'monthly':
                 if type == 'asset':
-                    query = """ 
-                                select 
-                                    item, 
-                                    item_count, 
+                    # -----------------------------수정 종윤------------------------
+
+                    query = """
+                                select
+                                    item,
+                                    item_count,
                                     statistics_collection_date
-                                from 
-                                    daily_statistics 
-                                where 
-                                    to_char(statistics_collection_date, 'YYYY-MM-DD') > '""" + monthDay + """' 
+                                from
+                                    daily_statistics
+                                where
+                                    to_char(statistics_collection_date, 'YYYY-MM-DD')
+                                in 
+                                    """ + str(LM) + """
                                 and
                                     classification = 'virtual'
                                 and
-                                    item != 'unconfirmed'                
-                                union                               
-                                select 
+                                    item != 'unconfirmed'
+                                union
+                                select
                                     item,
                                     item_count,
                                     statistics_collection_date
                                 from
                                     minutely_statistics
-                                where 
+                                where
                                     classification = 'virtual'
                                 and
                                     item != 'unconfirmed'
-                                and 
-                                    statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                                and
+                                    to_char(statistics_collection_date, 'YYYY-MM-DD')
+                                in 
+                                    """ + str(LM)+ """
                                 order by
                                     statistics_collection_date ASC;
                             """
+                    # query = """
+                    #             select
+                    #                 item,
+                    #                 item_count,
+                    #                 statistics_collection_date
+                    #             from
+                    #                 daily_statistics
+                    #             where
+                    #                 to_char(statistics_collection_date, 'YYYY-MM-DD') > '""" + monthDay + """'
+                    #             and
+                    #                 classification = 'virtual'
+                    #             and
+                    #                 item != 'unconfirmed'
+                    #             union
+                    #             select
+                    #                 item,
+                    #                 item_count,
+                    #                 statistics_collection_date
+                    #             from
+                    #                 minutely_statistics
+                    #             where
+                    #                 classification = 'virtual'
+                    #             and
+                    #                 item != 'unconfirmed'
+                    #             and
+                    #                 statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                    #             order by
+                    #                 statistics_collection_date ASC;
+                    #         """
 
             if day == 'fiveDay':
                 if type == 'asset':
@@ -1147,7 +1194,11 @@ def plug_in(table, day, type):
             elif day == 'connectDestinationIpMore':
 
                 index = (int(type[1]) - 1) * int(type[0]) + i
-                name = R[2] if R[2] else 'undefined'
+
+                if R[2] != None:
+                    name = R[2]
+                else :
+                    name = 'undefined'
                 SDL.append(dict(
                     (
                         ('index', index),
