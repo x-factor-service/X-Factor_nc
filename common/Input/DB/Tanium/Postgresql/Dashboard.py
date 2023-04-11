@@ -946,9 +946,7 @@ def plug_in(table, day, type):
                                 and
                                     item != 'unconfirmed'
                                 and
-                                    to_char(statistics_collection_date, 'YYYY-MM-DD')
-                                in 
-                                    """ + str(LM)+ """
+                                    statistics_collection_date >= '""" + fiveMinutesAgo + """'
                                 order by
                                     statistics_collection_date ASC;
                             """
