@@ -407,6 +407,28 @@ def gpuServer_moreInfo_paging(request):
                   }
     return JsonResponse(returnData)
 
+#-----------------iscsi동훈--------------------------------
+def isci_moreInfo(request):
+    return render(request, 'popup/iscsi_moreInfo.html')
+
+@csrf_exempt
+def iscsi_moreInfo_paging(request):
+    draw = int(request.POST.get('draw'))
+    start = int(request.POST.get('start'))
+    length = int(request.POST.get('length'))
+    search = request.POST.get('search[value]')
+    page = math.ceil(start / length) + 1
+    data = [str(length), str(page), str(search)]
+    SMD = PDPI('statistics', 'iscsiMore', data)
+    SMC = PDPI('statistics', 'iscsiCount', data)
+    RD = {"item": SMD}
+    returnData = {'data': RD,
+                  'draw': draw,
+                  'recordsTotal': SMC,
+                  'recordsFiltered': SMC,
+                  }
+    return JsonResponse(returnData)
+
 def alarmCase_moreInfo(request):
     return render(request, 'popup/alarmCase_moreInfo.html')
 @csrf_exempt

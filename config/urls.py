@@ -40,6 +40,9 @@ urlpatterns = [
     path('gpuServer_moreInfo/paging/', base_views.gpuServer_moreInfo_paging, name='gpuServer_moreInfo_paging'),
     path('alarmCase_moreInfo/', base_views.alarmCase_moreInfo, name='alarmCase_moreInfo'),
     path('alarmCase_moreInfo/paging/', base_views.alarmCase_moreInfo_paging, name='alarmCase_moreInfo_paging'),
+    # -------------------------------------- 동훈-------------------------------------
+    path('iscsi_moreInfo/', base_views.isci_moreInfo, name='iscsi_moreInfo'),
+    path('iscsi_moreInfo/paging/', base_views.iscsi_moreInfo_paging, name='iscsi_moreInfo_paging'),
     # -------------------------------------- 종윤-------------------------------------
     path('connectDestinationIp_moreInfo/', base_views.connectDestinationIp_moreInfo, name='connectDestinationIp_moreInfo'),
     path('connectDestinationIp_moreInfo/paging/', base_views.connectDestinationIp_moreInfo_paging, name='connectDestinationIp_moreInfo_paging'),

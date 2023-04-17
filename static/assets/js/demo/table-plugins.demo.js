@@ -1051,6 +1051,101 @@ var connectDestinationIphandleRenderDashboardPopupTableData = function () {
 
 	});
 };
+//------------------------------동훈iscsi----------------------------------------------
+var iscsihandleRenderDashboardPopupTableData = function () {
+	var dashboardpopupTable = $('#iscsiDashboard-popupTable').DataTable({
+		dom: "<'d-flex justify-content-between mb-3'<'col-md-4 mb-md-0'l><'text-right'<'d-flex justify-content-end'fB>>>t<'align-items-center d-flex justify-content-between'<' mr-auto col-md-6 mb-md-0 mt-n2 'i><'mb-0 col-md-6'p>>",
+		lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+		responsive: true,
+		searching: true,
+		ordering: false,
+		serverSide: true,
+		displayLength: false,
+		ajax: {
+			url: 'paging/',
+			type: "POST",
+			dataSrc: function (res) {
+				var data = res.data.item;
+				return data;
+			}
+		},
+		columns: [
+			{data: 'index'},
+			{data: 'ip'},
+			{data: 'name'},
+			{data: 'iscsi_name'},
+			{data: 'iscsi_size'},
+			{data: 'iscsi_used_space'},
+			{data: 'iscsiusage'},
+			{data: 'iscsi_free_space'},
+		],
+		columnDefs: [
+            {targets: 0, width: "10%", className: 'text-center'},
+            {targets: 1, width: "20%", className: 'text-center text-truncate', render: function(data, type, row) {return '<span title="'+row.ip+'" data-toggle="tooltip">'+data+'</span>'}},
+            {targets: 2, width: "30%", className: 'text-start text-truncate', render: function(data, type, row) {return '<span title="'+row.name+'" data-toggle="tooltip">'+data+'</span>'}},
+            {targets: 3, width: "6%", className: 'text-center'},
+            {targets: 4, width: "6%", className: 'text-center'},
+            {targets: 5, width: "6%", className: 'text-center'},
+            {targets: 6, width: "6%", className: 'text-center'},
+            {targets: 7, width: "6%", className: 'text-center'},
+
+		],
+		language: {
+			"decimal": "",
+			"info": "전체 _TOTAL_건",
+			"infoEmpty": "데이터가 없습니다.",
+			"emptyTable": "데이터가 없습니다.",
+			"thousands": ",",
+			"lengthMenu": "페이지당 _MENU_ 개씩 보기",
+			"loadingRecords": "로딩 중입니다.",
+			"processing": "",
+			"zeroRecords": "검색 결과 없음",
+			"paginate": {
+				"first": "처음",
+				"last": "끝",
+				"next": "다음",
+				"previous": "이전"
+			},
+			"search": "검색:",
+			"infoFiltered": "(전체 _MAX_ 건 중 검색결과)",
+			"infoPostFix": "",
+		},
+        pagingType: 'numbers',
+
+        drawCallback: function() {
+            var current_page = dashboardpopupTable.page();
+            var total_pages = dashboardpopupTable.page.info().pages;
+            $('#nexts').remove();
+            $('#after').remove();
+
+            if (total_pages > 10){
+            $('<button type="button" class="btn" id="nexts">10≫</button>')
+            .insertAfter('#iscsiDashboard-popupTable_paginate .paginate_button:last');
+            $('<button type="button" class="btn" id="after">≪10</button>')
+            .insertBefore('#iscsiDashboard-popupTable_paginate .paginate_button:first');
+            }
+        }
+});
+
+	$(document).on('click', '#nexts, #after', function() {
+        var current_page = dashboardpopupTable.page();
+        var total_pages = dashboardpopupTable.page.info().pages;
+        if ($(this).attr('id') == 'nexts') {
+                if (current_page + 10 < total_pages) {
+                    dashboardpopupTable.page(current_page + 10).draw('page');
+                } else {
+                    dashboardpopupTable.page(total_pages - 1).draw('page');
+                }
+                } else {
+                    dashboardpopupTable.page(Math.max(current_page - 10, 0)).draw('page');
+                }
+});
+        $(document).ready(function() {
+        var customStyle = '<style>#nexts, #after {color: #FFFFFF; background-color: #FFFFFF26; margin-left: 5px; height: 33px; padding: 6px 12px; font-size: 15px; padding: 6px 12px; margin-right: 5px;}</style>';
+        $('head').append(customStyle);
+});
+};
+
 var connectSourceIphandleRenderDashboardPopupTableData = function () {
 
 	var dashboardpopupTable = $('#connectSourceIpDashboard-popupTable').DataTable({
