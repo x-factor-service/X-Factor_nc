@@ -482,25 +482,43 @@
         </div>
         <!-- END col-3 -->
         <!-- BEGIN col-3 -->
-        <div class="col-xl-iscsi col-lg-iscsi">
+        <div class="col-xl col-lg">
             <!-- BEGIN card -->
             <div class="card mb-3">
                 <!-- BEGIN card-body -->
                 <div class="card-body h-150px">
                     <!-- BEGIN title -->
                     <button type="button" class="btn btn-outline-link btn-sm btn-moreInfo iscsi-moreInfo"><i class="fas fa-ellipsis-h"></i></button>
-                    <div class="d-flex fw-bold small">
-                        <div class="flex-grow-1">ISCSI 사용 현황</div>
+                    <div class="d-flex fw-bold fs-12px">
+                        <div class="flex-grow-1">ISCSI 서버 수량</div>
                     </div>
                     <!-- END title -->
                     <!-- BEGIN stat-lg -->
-                    <div>
-                        <div class="col-12">
-                            <div class="mt-n3 mb-n2 h-100px" id=></div>
+                    {% if chartData.IscsiServerDataList %}
+                    <div class="col-12 h-100px d-flex text-center align-content-center justify-content-center flex-md-column">
+                        <div class="count-num">
+                            <span class="fw-bold text-opacity-60 fs-35px pe-3 pb-10px ">{{ chartData.IscsiServerDataList.value }}개</span>
+                            <div class="conNumImg" style="position: relative;">
+                                {% if chartData.IscsiServerDataList.roc == 0 %}
+                                <a class="conNumIcon text-decoration-none fs-25px"> - </a>
+                                {% elif chartData.IscsiServerDataList.roc > 0 %}
+                                <img class="conArrow fs-25px pt-25px" src="{% static 'img/common/dashboard/arrowTop.png' %}">
+                                {% elif chartData.IscsiServerDataList.roc < 0 %}
+                                <img class="conArrow fs-25px pt-25px" src="{% static 'img/common/dashboard/arrowBot.png' %}">
+                                {% endif %}
+                            </div>
+                            <span class="conNum text-theme fw-bold fs-25px">
+                            {% if chartData.IscsiServerDataList.roc < 0 %}
+                            {% widthratio chartData.IscsiServerDataList.roc 1 -1 %}
+                            {% else %}
+                            {{ chartData.IscsiServerDataList.roc }}
+                            {% endif %}
+                            </span>
                         </div>
                     </div>
                     <!-- END stat-lg -->
                 </div>
+                {% endif %}
                 <!-- END card-body -->
 
                 <!-- BEGIN card-arrow -->

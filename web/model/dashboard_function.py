@@ -288,6 +288,56 @@ def DashboardData():
                     logger.warning('dashboard_function.py - Error Occurred')
                     logger.warning('Error - memoryMoreDataList')
 
+                # iscsi 서버 수량
+                try:
+                    IscsiServerData = PDPI('statistics', 'today', 'iscsi')
+                    try:
+                        tValue = int(IscsiServerData[0][1])
+                        yValue = int(IscsiServerData[1][1])
+                        roc = tValue - yValue
+                        IscsiServerDataList = {"value": tValue, 'roc': roc}
+                    except:
+                        if not tValue:
+                            IscsiServerDataList = {"value": '-', 'roc': '-'}
+                        else:
+                            IscsiServerDataList = {"value": tValue, 'roc': tValue}
+
+                    logger.info('dashboard_function.py - IscsiServerDataList - Success')
+
+                except:
+                    IscsiServerDataList = []
+                    if len(IscsiServerDataList) == 0:
+                        IscsiServerDataList = {"value": '-', 'roc': '-'}
+                    else:
+                        logger.warning('dashboard_function.py - Error Occurred')
+                        logger.warning('Error - IscsiServerDataList')
+
+                # try:
+                #     IscsiServerData = PDPI('statistics', 'today', 'iscsi')
+                #     try:
+                #         tValue = int(IscsiServerData[0][1])
+                #         yValue = int(IscsiServerData[1][1])
+                #         roc = tValue - yValue
+                #         IscsiServerDataList = {"value": tValue, 'roc': roc}
+                #     except:
+                #         if not tValue:
+                #             IscsiServerDataList = {"value": '-', 'roc': '-'}
+                #         else:
+                #             IscsiServerDataList = {"value": tValue, 'roc': tValue}
+                #
+                #     logger.info('dashboard_function.py - IscsiServerDataList - Success')
+                #
+                # except:
+                #     IscsiServerDataList = []
+                #     if len(IscsiServerDataList) == 0:
+                #         IscsiServerDataList = {"value": '-', 'roc': '-'}
+                #     else:
+                #         logger.warning('dashboard_function.py - Error Occurred')
+                #         logger.warning('Error - IscsiServerDataList')
+
+
+
+
                 USCDL = {"DiskChartDataList": DiskChartDataList, "CpuChartDataList": CpuChartDataList, "MemoryChartDataList": MemoryChartDataList}
                 ODDLC = os_donutChartData
                 OCPO = os_chartPartOne
@@ -304,6 +354,7 @@ def DashboardData():
                 CIDL = connectIpDataList
                 CSDL = connectServerDataList
                 MMDL = []
+                ISDL = IscsiServerDataList
 
             elif core == 'Zabbix':
                 print()
@@ -325,7 +376,8 @@ def DashboardData():
             "GpuServerDataList": GSDL,
             "connectIpDataList": CIDL,
             "connectServerDataList": CSDL,
-            "memoryMoreDataList": MMDL
+            "memoryMoreDataList": MMDL,
+            "IscsiServerDataList":ISDL
         }
     else :
         if ProjectType == 'System':

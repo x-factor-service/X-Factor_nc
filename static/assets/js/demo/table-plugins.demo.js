@@ -1075,19 +1075,19 @@ var iscsihandleRenderDashboardPopupTableData = function () {
 			{data: 'name'},
 			{data: 'iscsi_name'},
 			{data: 'iscsi_size'},
+			{data: 'iscsi_free_space'},
 			{data: 'iscsi_used_space'},
 			{data: 'iscsiusage'},
-			{data: 'iscsi_free_space'},
 		],
 		columnDefs: [
-            {targets: 0, width: "10%", className: 'text-center'},
+            {targets: 0, width: "4%", className: 'text-center'},
             {targets: 1, width: "20%", className: 'text-center text-truncate', render: function(data, type, row) {return '<span title="'+row.ip+'" data-toggle="tooltip">'+data+'</span>'}},
-            {targets: 2, width: "30%", className: 'text-start text-truncate', render: function(data, type, row) {return '<span title="'+row.name+'" data-toggle="tooltip">'+data+'</span>'}},
-            {targets: 3, width: "6%", className: 'text-center'},
-            {targets: 4, width: "6%", className: 'text-center'},
-            {targets: 5, width: "6%", className: 'text-center'},
-            {targets: 6, width: "6%", className: 'text-center'},
-            {targets: 7, width: "6%", className: 'text-center'},
+            {targets: 2, width: "15%", className: 'text-center text-truncate', render: function(data, type, row) {return '<span title="'+row.name+'" data-toggle="tooltip">'+data+'</span>'}},
+            {targets: 3, width: "35%", className: 'text-center'},
+            {targets: 4, width: "15%", className: 'text-center'},
+            {targets: 5, width: "15%", className: 'text-center'},
+            {targets: 6, width: "15%", className: 'text-center'},
+            {targets: 7, width: "15%", className: 'text-center'},
 
 		],
 		language: {
@@ -1303,5 +1303,8 @@ $(document).ready(function () {
     	connectDestinationIphandleRenderDashboardPopupTableData();
 	}else if($("#connectSourceIpDashboard-popupTable").length > 0){
     	connectSourceIphandleRenderDashboardPopupTableData();
+
+    }else if($("#iscsiDashboard-popupTable").length > 0){
+		iscsihandleRenderDashboardPopupTableData();
     };
 });

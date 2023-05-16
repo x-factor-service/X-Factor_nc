@@ -4,6 +4,7 @@ import psycopg2
 import json
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from collections import defaultdict
 
 import pandas as pd
 
@@ -429,6 +430,49 @@ def plug_in(table, day, type):
                         and NOT ipv_address IN ('unconfirmed')
                     """
 
+            elif day == 'iscsiMore':
+                query = """
+                        select
+                            ipv_address, computer_name, iscsi_name, iscsi_drive_letter, iscsi_size, iscsi_free_space, iscsi_used_space, iscsiusage
+                        from
+                            minutely_statistics_list
+                        where
+                            asset_list_statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                        and 
+                            NOT iscsi_name IN ('unconfirmed','no results')    
+                        and
+                            (ipv_address Ilike '%""" + type[2] + """%' or
+                            computer_name Ilike '%""" + type[2] + """%' or
+                            iscsi_name Ilike '%""" + type[2] + """%' or
+                            iscsi_drive_letter Ilike '%""" + type[2] + """%' or
+                            iscsi_size Ilike '%""" + type[2] + """%' or
+                            iscsi_free_space Ilike '%""" + type[2] + """%' or
+                            iscsi_used_space Ilike '%""" + type[2] + """%' or
+                            iscsiusage Ilike '%""" + type[2] + """%')
+                            order by iscsi_name desc
+                        LIMIT """ + type[0] + """
+                        OFFSET (""" + type[1] + """-1) * """ + type[0] + """
+                    """
+            elif day == 'iscsiCount':
+                query = """
+                        select
+                            COUNT(*)
+                         from
+                            minutely_statistics_list 
+                        where
+                            (ipv_address Ilike '%""" + type[2] + """%' or
+                            computer_name Ilike '%""" + type[2] + """%' or
+                            iscsi_name Ilike '%""" + type[2] + """%' or
+                            iscsi_drive_letter Ilike '%""" + type[2] + """%' or
+                            iscsi_size Ilike '%""" + type[2] + """%' or
+                            iscsi_free_space Ilike '%""" + type[2] + """%' or
+                            iscsi_used_space Ilike '%""" + type[2] + """%' or
+                            iscsiusage Ilike '%""" + type[2] + """%')
+                        and 
+                            NOT iscsi_name IN ('unconfirmed','no results')     
+                        and
+                            asset_list_statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                    """
 
 # ---------------------------------------------------------------------------------------------------------
 
@@ -481,7 +525,6 @@ def plug_in(table, day, type):
                                 order by nvidia_smi desc
                             LIMIT """ + type[0] + """
                             OFFSET (""" + type[1] + """-1) * """ + type[0] + """
-
                         """
             elif day == 'gpuServerCount':
                 query = """
@@ -884,6 +927,31 @@ def plug_in(table, day, type):
                             and 
                                 to_char(statistics_collection_date, 'YYYY-MM-DD') = '""" + yesterday + """'
                     """
+
+                elif type == 'iscsi':
+                    query = """
+                            select
+                                item, item_count
+                            from
+                                minutely_statistics
+                            where
+                                classification = 'iscsi_name'
+                            and
+                                item = 'YES'
+                            and 
+                                statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                            union all
+                            select
+                                item, item_count
+                            from
+                                daily_statistics
+                            where
+                                classification = 'iscsi_name'
+                            and
+                                item = 'YES'
+                            and 
+                                to_char(statistics_collection_date, 'YYYY-MM-DD') = '""" + yesterday + """'
+                    """
                 # elif type == 'ip':
                 #     query = """
                 #             select
@@ -1131,6 +1199,7 @@ def plug_in(table, day, type):
                     """
         Cur.execute(query)
         RS = Cur.fetchall()
+        global_index = 0
         for i, R in enumerate(RS, start=1):
             if day == 'memoryMore' or day == 'diskMore':
                 index = (int(type[1]) - 1) * int(type[0]) + i
@@ -1219,6 +1288,58 @@ def plug_in(table, day, type):
 
                     )
                 ))
+
+            # elif day == 'iscsiMore':
+            #     # index = (int(type[1]) - 1) * int(type[0]) + i
+            #     iscsi_names = R[2].strip('{"}').replace('"', '').split(',')
+            #     iscsi_drive_letter = R[3].replace('"', '').strip('{"}').split(',')
+            #     iscsi_sizes = R[4].strip('{"}').split(',')
+            #     iscsi_free_spaces = R[5].strip('{"}').split(',')
+            #     iscsi_used_spaces = R[6].strip('["]').split(',')
+            #     iscsiusages = R[7].strip('["]').split(',')
+            #
+            #     for iscsi_name,iscsi_drive_letter, iscsi_size,iscsi_free_space, iscsi_used_space, iscsiusage in zip(iscsi_names,iscsi_drive_letter,iscsi_sizes, iscsi_free_spaces,iscsi_used_spaces,iscsiusages):
+            #         global_index += 1
+            #         SDL.append(dict(
+            #             (
+            #                 ('index', global_index),
+            #                 ('ip', R[0]),
+            #                 ('name', R[1]),
+            #                 ('iscsi_name', iscsi_name + ' (' + iscsi_drive_letter+')'),
+            #                 ('iscsi_size', iscsi_size),
+            #                 ('iscsi_free_space', iscsi_free_space),
+            #                 ('iscsi_used_space', iscsi_used_space),
+            #                 ('iscsiusage', iscsiusage),
+            #             )
+            #         ))
+
+            elif day == 'iscsiMore':
+                    iscsi_names = R[2].strip('{"}').replace('"', '').split(',')
+                    iscsi_drive_letter = R[3].replace('"', '').strip('{"}').split(',')
+                    iscsi_sizes = R[4].strip('{"}').split(',')
+                    iscsi_free_spaces = R[5].strip('{"}').split(',')
+                    iscsi_used_spaces = R[6].strip('["]').split(',')
+                    iscsiusages = R[7].strip('["]').split(',')
+
+                    iscsi_name_text = '<br>'.join([iscsi_name + ' (' + iscsi_drive_letter + ')' for iscsi_name, iscsi_drive_letter in zip(iscsi_names, iscsi_drive_letter)])
+                    iscsi_size_text = '<br>'.join(iscsi_sizes)
+                    iscsi_free_space_text = '<br>'.join(iscsi_free_spaces)
+                    iscsi_used_space_text = '<br>'.join(iscsi_used_spaces)
+                    iscsiusage_text = '<br>'.join(iscsiusages)
+
+                    global_index += 1
+                    SDL.append(dict(
+                        (
+                            ('index', global_index),
+                            ('ip', R[0]),
+                            ('name', R[1]),
+                            ('iscsi_name', iscsi_name_text),
+                            ('iscsi_size', iscsi_size_text),
+                            ('iscsi_free_space', iscsi_free_space_text),
+                            ('iscsi_used_space', iscsi_used_space_text),
+                            ('iscsiusage', iscsiusage_text),
+                        )
+                    ))
             else:
                 SDL.append(R)
         return SDL
