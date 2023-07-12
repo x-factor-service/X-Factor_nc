@@ -288,11 +288,10 @@ def plug_in(table, day, type):
                             and
                                 (item Ilike '%""" + type[2] + """%' or
                                 item_count Ilike '%""" + type[2] + """%')
-                            order by item_count::INTEGER desc
+                            order by item_count::INTEGER desc, item asc
                             LIMIT """ + type[0] + """
                             OFFSET (""" + type[1] + """-1) * """ + type[0] + """
                         """
-
             elif day == 'runningServiceCount2':
                 query = """
                         select
