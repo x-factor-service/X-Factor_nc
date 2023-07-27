@@ -27,6 +27,7 @@ RSU = SETTING['FILE']['RunningService_Except']['USE']
 def plug_in(table, day, type):
     try:
         fiveMinutesAgo = (datetime.today() - timedelta(minutes=DBSelectTime)).strftime("%Y-%m-%d %H:%M:%S")
+        fiveMinuteAgo = (datetime.today() - timedelta(minutes=5)).strftime("%Y-%m-%d %H:%M:%S")
         halfHourAgo = (datetime.today() - timedelta(minutes=35)).strftime("%Y-%m-%d %H:%M:%S")
         yesterday = (datetime.today() - timedelta(1)).strftime("%Y-%m-%d")
         fiveDay = (datetime.today() - timedelta(5)).strftime("%Y-%m-%d")
@@ -969,17 +970,15 @@ def plug_in(table, day, type):
                 elif type == 'ip':
                     query = """
                             select
-                                item, item_count, minutely_statistics_list.computer_name
+                                minutely_statistics_unique, classification, item, item_count
                             from
                                 minutely_statistics
-                            join minutely_statistics_list
-                            on split_part(minutely_statistics.item,':',1) = minutely_statistics_list.ipv_address
                             where
-                                classification = 'session_ip' and item != 'NO'
+                                classification = 'session_ip_computer_name'
                             and
-                                statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                                statistics_collection_date >= '""" + fiveMinuteAgo + """'
                             order by
-                                item_count::INTEGER desc limit 3
+                                item_count::INTEGER desc 
                     """
             # NC 서버 총 수량 추이 그래프(30일)
             if day == 'monthly':
