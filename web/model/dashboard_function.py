@@ -253,7 +253,7 @@ def DashboardData():
                             name = split[1]
                             connectIpDataList.append({'ip': ip, 'name': name , 'host': host, 'count': connectIpData[i][3]})
                     if not connectIpData:
-                        connectIpDataExcept = [{'ip': '-', 'host': '-', 'count': '-' }]
+                        connectIpDataExcept = [{'ip': '-', 'host': '-', 'count': '-'}]
                         connectIpDataList = connectIpDataExcept * 3
                     logger.info('dashboard_function.py - connectIpDataList - Success')
                 except:
