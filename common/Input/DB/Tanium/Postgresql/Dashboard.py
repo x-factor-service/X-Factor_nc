@@ -307,14 +307,14 @@ def plug_in(table, day, type):
             elif day == 'connectDestinationIpMore':
                 query = """
                         select
-                            ms.item, ms.item_count,msl.computer_name
+                            mssi.item, mssi.item_count,msl.computer_name
                         from 
                             (select * from minutely_statistics_session_ip mssi where
-                            classification = 'session_ip' and statistics_collection_date >= '""" + fiveMinutesAgo + """' and item != 'NO' order by item_count::INTEGER desc limit 50) as ms                             
+                            classification = 'session_ip' and statistics_collection_date >= '""" + fiveMinutesAgo + """' and item != 'NO' order by item_count::INTEGER desc limit 50) as mssi                             
                         left join 
                             minutely_statistics_list as msl                        
                         on 
-                            split_part(ms.item,':',1) = msl.ipv_address  
+                            split_part(mssi.item,':',1) = msl.ipv_address  
                         where     
                             classification = 'session_ip' and item != 'NO'
                         and
@@ -359,13 +359,13 @@ def plug_in(table, day, type):
                         select
                             Count(*)
                         from 
-                            (select * from minutely_statistics ms where
-                            classification = 'session_ip' and statistics_collection_date >= '""" + fiveMinutesAgo + """' and item != 'NO' order by item_count::INTEGER desc limit 50) as ms 
+                            (select * from minutely_statistics_session_ip mssi where
+                            classification = 'session_ip' and statistics_collection_date >= '""" + fiveMinutesAgo + """' and item != 'NO' order by item_count::INTEGER desc limit 50) as mssi 
                             
                         left join 
-                            minutely_statistics_list as msl
+                            minutely_statistics_list as msl                        
                         on 
-                            split_part(ms.item,':',1) = msl.ipv_address
+                            split_part(mssi.item,':',1) = msl.ipv_address
                         where
                             (item Ilike '%""" + type[2] + """%' or
                             item_count Ilike '%""" + type[2] + """%')
