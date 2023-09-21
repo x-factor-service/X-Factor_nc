@@ -1,7 +1,7 @@
 {
   "PROJECT" : {
     "CORE" : "Tanium",
-    "LOGIN" : "WEB",
+    "LOGIN" : "Tanium",
     "CUSTOMER" : "Xfactor",
     "TYPE" : "System",
     "LOG" : {
@@ -35,6 +35,10 @@
      "ContentType": "application/json",
      "PATH": {
        "SesstionKey": "/api/v2/session/login",
+       "Persona" : {
+         "PersonaUrl" : "/api/v2/session/as_persona/",
+         "PID" : "1"
+       },
        "Sensor": "/api/v2/result_data/saved_question/",
        "Questions": {
          "Saved": "/api/v2/saved_questions"

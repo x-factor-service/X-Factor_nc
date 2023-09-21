@@ -16,8 +16,8 @@ UserTNM = SETTING['DB']['UserTNM']
 Login_Method = SETTING['PROJECT']['LOGIN']
 apiUrl = SETTING['API']['apiUrl']
 SesstionKeyPath = SETTING['API']['PATH']['SesstionKey']
-
-
+Persona = SETTING['API']['PATH']['Persona']['PersonaUrl']
+PersonaID = SETTING['API']['PATH']['Persona']['PID']
 # hi
 
 def signup(request):
@@ -317,8 +317,17 @@ def taniumUsers(user_id, user_pw):
         if code==200:
             a = response.json()
             sessionKey = a['data']['session']
-            returnList = sessionKey
-            return returnList
+            purl = apiUrl+Persona+PersonaID
+            pheaders = {
+                "session": sessionKey
+            }
+            presponse = requests.post(purl, headers=pheaders, verify=False)
+            pcode= presponse.status_code
+            if pcode == 200:
+                b = presponse.json()
+                psessionKey = b['data']['session']
+                returnList = psessionKey
+                return returnList
         elif code==403 :
             print()
 

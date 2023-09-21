@@ -306,13 +306,13 @@ def plug_in(table, day, type):
             # -------------------------------------------종윤-----------------------------------------
             elif day == 'connectDestinationIpMore':
                 query = """
-                        select
-                            mssi.item, mssi.item_count,msl.computer_name
+                        select 
+                            mssi.item, mssi.item_count,coalesce (msl.computer_name, 'Virtual/Service IP')as computer_name
                         from 
                             (select * from minutely_statistics_session_ip mssi where
                             classification = 'session_ip' and statistics_collection_date >= '""" + fiveMinutesAgo + """' and item != 'NO' order by item_count::INTEGER desc limit 50) as mssi                             
                         left join 
-                            minutely_statistics_list as msl                        
+                            (select ipv_address, computer_name from minutely_statistics_list where asset_list_statistics_collection_date >= '""" + fiveMinutesAgo + """') as msl                       
                         on 
                             split_part(mssi.item,':',1) = msl.ipv_address  
                         where     
@@ -323,14 +323,11 @@ def plug_in(table, day, type):
                              (item Ilike '%""" + type[2] + """%' or             
                              item_count Ilike '%""" + type[2] + """%')
                         order by 
-                            item_count::INTEGER desc
+                            item_count::INTEGER desc, item asc
                         LIMIT """ + type[0] + """
                         OFFSET (""" + type[1] + """-1) * """ + type[0] + """
-
-                
-                
-                
                         """
+
 
 
 
@@ -363,7 +360,7 @@ def plug_in(table, day, type):
                             classification = 'session_ip' and statistics_collection_date >= '""" + fiveMinutesAgo + """' and item != 'NO' order by item_count::INTEGER desc limit 50) as mssi 
                             
                         left join 
-                            minutely_statistics_list as msl                        
+                            (select ipv_address, computer_name from minutely_statistics_list where asset_list_statistics_collection_date >= '""" + fiveMinutesAgo + """') as msl                      
                         on 
                             split_part(mssi.item,':',1) = msl.ipv_address
                         where
@@ -975,38 +972,73 @@ def plug_in(table, day, type):
             if day == 'monthly':
                 if type == 'asset':
                     # -----------------------------수정 종윤------------------------
-
                     query = """
-                                select
-                                    item,
-                                    item_count,
-                                    statistics_collection_date
-                                from
-                                    daily_statistics
-                                where
-                                    to_char(statistics_collection_date, 'YYYY-MM-DD')
-                                in 
-                                    """ + str(LM) + """
-                                and
-                                    classification = 'virtual'
-                                and
-                                    item != 'unconfirmed'
-                                union
-                                select
-                                    item,
-                                    item_count,
-                                    statistics_collection_date
-                                from
-                                    minutely_statistics
-                                where
-                                    classification = 'virtual'
-                                and
-                                    item != 'unconfirmed'
-                                and
-                                    statistics_collection_date >= '""" + fiveMinutesAgo + """'
-                                order by
-                                    statistics_collection_date ASC;
-                            """
+                            WITH RECURSIVE months AS (
+                                SELECT
+                                    DATE_TRUNC('MONTH', NOW()) - INTERVAL '11 MONTH' AS start_date,
+                                    DATE_TRUNC('MONTH', NOW()) AS end_date
+                                UNION ALL
+                                SELECT
+                                    start_date + INTERVAL '1 MONTH',
+                                    end_date + INTERVAL '1 MONTH'
+                                FROM months
+                                WHERE start_date < NOW() - INTERVAL '1 MONTH'
+                            )
+                            SELECT d.item_daily AS item, d.item_count_daily AS item_count, d.statistics_collection_date_daily AS statistics_collection_date
+                            FROM months m
+                            inner JOIN LATERAL (
+                                SELECT item AS item_daily, item_count AS item_count_daily, statistics_collection_date AS statistics_collection_date_daily
+                                FROM daily_statistics
+                                WHERE to_char(statistics_collection_date, 'YYYY-MM') = to_char(m.start_date, 'YYYY-MM')        
+                                AND classification = 'virtual'
+                                AND item != 'unconfirmed'
+                                AND statistics_collection_date < DATE_TRUNC('MONTH', NOW())
+                                ORDER BY statistics_collection_date DESC
+                                LIMIT 2
+                            ) d ON true
+                            
+                            UNION ALL
+                            
+                            SELECT item AS item_minutely, item_count AS item_count_minutely, statistics_collection_date AS statistics_collection_date_minutely
+                            FROM minutely_statistics
+                            WHERE classification = 'virtual'
+                            AND item != 'unconfirmed'
+                            
+                            ORDER BY statistics_collection_date ASC;
+                        """
+
+                    # query = """
+                    #             select
+                    #                 item,
+                    #                 item_count,
+                    #                 statistics_collection_date
+                    #             from
+                    #                 daily_statistics
+                    #             where
+                    #                 to_char(statistics_collection_date, 'YYYY-MM-DD')
+                    #             in
+                    #                 """ + str(LM) + """
+                    #             and
+                    #                 classification = 'virtual'
+                    #             and
+                    #                 item != 'unconfirmed'
+                    #             union
+                    #             select
+                    #                 item,
+                    #                 item_count,
+                    #                 statistics_collection_date
+                    #             from
+                    #                 minutely_statistics
+                    #             where
+                    #                 classification = 'virtual'
+                    #             and
+                    #                 item != 'unconfirmed'
+                    #             and
+                    #                 statistics_collection_date >= '""" + fiveMinutesAgo + """'
+                    #             order by
+                    #                 statistics_collection_date ASC;
+                    #         """
+
                     # query = """
                     #             select
                     #                 item,

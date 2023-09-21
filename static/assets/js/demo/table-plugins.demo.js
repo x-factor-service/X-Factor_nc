@@ -1166,7 +1166,7 @@ var connectSourceIphandleRenderDashboardPopupTableData = function () {
 				var data = res.data.item;
 				return data;
 
-                print(res)
+
 			}
 		},
 		columns: [

@@ -276,17 +276,17 @@ def DashboardData():
 
                 #게이지 차트 사용량 더보기
                 #메모리 부분
-                try:
-                    memoryMoreDataList = []
-                    memoryMore = PDPI('statistics_list', 'today', 'memoryMore')
-                    for i in range(len(memoryMore)):
-                        if memoryMore[i][0] != 'unconfirmed' and not memoryMore[i][2].startswith('[current') and not memoryMore[i][3].startswith('[current') and memoryMore[i][4] != 'unconfirmed':
-                            count = math.trunc(float(memoryMore[i][4]))
-                            memoryMoreDataList.append({"ip": memoryMore[i][0], "name": memoryMore[i][1], "use": memoryMore[i][2], "total": memoryMore[i][3], "usage": count})
-                    logger.info('dashboard_function.py - memoryMoreDataList - Success')
-                except:
-                    logger.warning('dashboard_function.py - Error Occurred')
-                    logger.warning('Error - memoryMoreDataList')
+                # try:
+                #     memoryMoreDataList = []
+                #     memoryMore = PDPI('statistics_list', 'today', 'memoryMore')
+                #     for i in range(len(memoryMore)):
+                #         if memoryMore[i][0] != 'unconfirmed' and not memoryMore[i][2].startswith('[current') and not memoryMore[i][3].startswith('[current') and memoryMore[i][4] != 'unconfirmed':
+                #             count = math.trunc(float(memoryMore[i][4]))
+                #             memoryMoreDataList.append({"ip": memoryMore[i][0], "name": memoryMore[i][1], "use": memoryMore[i][2], "total": memoryMore[i][3], "usage": count})
+                #     logger.info('dashboard_function.py - memoryMoreDataList - Success')
+                # except:
+                #     logger.warning('dashboard_function.py - Error Occurred')
+                #     logger.warning('Error - memoryMoreDataList')
 
                 # iscsi 서버 수량
                 try:
@@ -353,7 +353,7 @@ def DashboardData():
                 GSDL = GpuServerDataList
                 CIDL = connectIpDataList
                 CSDL = connectServerDataList
-                MMDL = []
+                # MMDL = []
                 ISDL = IscsiServerDataList
 
             elif core == 'Zabbix':
@@ -376,7 +376,7 @@ def DashboardData():
             "GpuServerDataList": GSDL,
             "connectIpDataList": CIDL,
             "connectServerDataList": CSDL,
-            "memoryMoreDataList": MMDL,
+            # "memoryMoreDataList": MMDL,
             "IscsiServerDataList":ISDL
         }
     else :
